@@ -22,6 +22,13 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+// 注册全局指令
+import * as directives from '@/directives'
+Object.keys(directives).forEach(key => {
+  // 注册自定义指令
+  Vue.directive(key, directives[key])
+})
+
 new Vue({
   el: '#app',
   router,

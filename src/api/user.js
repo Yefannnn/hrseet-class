@@ -8,7 +8,12 @@ export const userlogin = data => request({
 })
 
 // 获取用户基本信息
-export const getUserInfo = () => require({
-  method: 'POST',
+export const getUserInfo = () => request({
+  method: 'post',
   url: '/sys/profile'
+})
+
+// 获取员工的基本信息
+export const getUserDetailById = id => request({
+  url: `/sys/user/${id}`
 })

@@ -11,7 +11,10 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   // config 是配置对象
   const token = store.getters.token
-  token ? config.headers['Authorization'] = `Bearer ${token}` : ''
+  // token ? config.headers['Authorization'] = `Bearer ${token}` : ''
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
   return config
 })
 

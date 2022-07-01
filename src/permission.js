@@ -7,13 +7,19 @@ import 'nprogress/nprogress.css'
 const White = ['/404', '/login']
 
 // 前置守卫
-router.beforeEach((to, form, next) => {
+router.beforeEach(async(to, form, next) => {
   nProgress.start()
   if (store.getters.token) {
     // 有token，判断to的path
     if (to.path === '/login') {
       next('/')
     } else {
+      // 判断如果用户token && 不去登录 && 没有userinfo
+      // store.getters.userId ? next() : await store.dispatch('user/getUserInfo') && next()
+      const userId = store.getters.userId
+      if (!userId) {
+        await store.dispatch('user/getUserInfo')
+      }
       next()
     }
   } else {
