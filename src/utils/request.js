@@ -17,7 +17,7 @@ service.interceptors.request.use(config => {
   // token ? config.headers['Authorization'] = `Bearer ${token}` : ''
   if (token) {
     // 有token，检查时间戳
-    if (IsCheckTimeOut(2)) {
+    if (IsCheckTimeOut(3600)) {
       // 超时了,跳转登录页，并且删除token和userinfo
       store.dispatch('user/logout')
       router.push('/login')
