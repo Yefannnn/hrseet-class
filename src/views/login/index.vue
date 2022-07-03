@@ -59,6 +59,7 @@
 import { validMobile } from '@/utils/validate'
 // map辅助函数
 import { mapActions } from 'vuex'
+import { setTime } from '@/utils/auth'
 
 export default {
   name: 'Login',
@@ -125,6 +126,8 @@ export default {
             this.loading = true
             await this.login(this.loginForm)
             this.$router.push('/')
+            // 登录成功之后设置时间戳
+            setTime()
           } catch (error) {
             this.$message.error(error.message)
           } finally {
