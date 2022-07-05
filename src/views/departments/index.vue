@@ -4,13 +4,13 @@
       <el-card>
         <TreeTools :tree-node="company" :is-root="true" @addDepts="addDepts" />
         <!-- 树形结构 -->
-        <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
+        <el-tree v-loading="loading" :data="departs" :props="defaultProps">
           <template v-slot="{ data }">
-            <TreeTools :tree-node="data" @delDepts="delDepts" @addDepts="addDepts" />
+            <TreeTools :tree-node="data" @delDepts="delDepts" @addDepts="addDepts" @editDepts="editDepts" />
           </template>
         </el-tree>
         <!-- 弹窗 -->
-        <Depts :title="Diolog.title" :show-dialog="Diolog.showDiolog" :pid="Diolog.pid" />
+        <Depts :show-dialog.sync="Diolog.showDiolog" :pid="Diolog.pid" />
       </el-card>
     </div>
   </div>
@@ -36,9 +36,9 @@ export default {
       },
       Diolog: {
         showDiolog: false,
-        title: '新增部门',
         pid: null
-      }
+      },
+      loading: false
 
     }
   },
@@ -48,12 +48,14 @@ export default {
   methods: {
     // 请求部门数据
     async getDepartments() {
+      this.loading = true
       // data中是所有部门的详细信息
       const { data } = await getDepartmentsAPI()
-      this.company = { name: data.companyName, manager: '负责人' }
+      this.company = { name: data.companyName, manager: '负责人', id: '' }
       // data 中的 depts
       // this.departs = data.depts
       this.departs = tranListToTreeData(data.depts, '')
+      this.loading = false
     },
     async delDepts(id) {
       // 执行删除操作
@@ -63,13 +65,19 @@ export default {
         // 重新获取部门信息
         this.getDepartments()
       } catch (error) {
-        this.$message.error(error)
+        this.$message.error(error.message)
       }
     },
     // 添加回调
     addDepts(pid) {
       // this.Diolog.title = '新增部门'
       this.Diolog.pid = pid
+      this.Diolog.showDiolog = true
+    },
+    async editDepts(pid) {
+      this.Diolog.pid = pid
+      // 调用子组件中的方法来回显
+      await this.$children[0].$children[2].getDepartDetail(pid)
       this.Diolog.showDiolog = true
     }
   }

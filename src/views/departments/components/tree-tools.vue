@@ -1,6 +1,6 @@
 <template>
   <!-- 行 -->
-  <el-row type="flex" justify="space-bewteen" align="middle" style="height: 60px ; width:100%">
+  <el-row type="flex" justify="space-bewteen" align="middle" style=" width:100%">
     <!-- 列 -->
     <el-col>
       <span>{{ treeNode.name }}</span>
@@ -10,7 +10,7 @@
         <el-col>{{ treeNode.manager }}</el-col>
         <el-col>
           <el-dropdown trigger="click" @command="dropdownFn">
-            <span>
+            <span class="el-dropdown-link">
               操作<i class="el-icon-arrow-down" />
             </span>
             <!-- 下拉菜单 -->
@@ -50,7 +50,7 @@ export default {
           break
           // 编辑
         case 'edit':
-
+          this.$emit('editDepts', this.treeNode.id)
           break
           // 删除
         case 'del':
@@ -78,8 +78,8 @@ export default {
 </script>
 
 <style scoped>
-  span{
-    color: cornflowerblue;
+  .el-dropdown-link{
+    color: rgb(17, 172, 250);
     font-size: 14px;
   }
 </style>
