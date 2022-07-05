@@ -1,6 +1,6 @@
 <template>
   <!-- 行 -->
-  <el-row type="flex" justify="space-bewteen" align="middle" style="height: 40px ; width:100%">
+  <el-row type="flex" justify="space-bewteen" align="middle" style="height: 60px ; width:100%">
     <!-- 列 -->
     <el-col>
       <span>{{ treeNode.name }}</span>
@@ -9,15 +9,15 @@
       <el-row type="flex" justify="end">
         <el-col>{{ treeNode.manager }}</el-col>
         <el-col>
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" @command="dropdownFn">
             <span>
               操作<i class="el-icon-arrow-down" />
             </span>
             <!-- 下拉菜单 -->
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>添加子部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">编辑子部门</el-dropdown-item>
-              <el-dropdown-item v-if="!isRoot">删除子部门</el-dropdown-item>
+              <el-dropdown-item command="add">添加子部门</el-dropdown-item>
+              <el-dropdown-item v-if="!isRoot" command="edit">编辑子部门</el-dropdown-item>
+              <el-dropdown-item v-if="!isRoot" command="del">删除子部门</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -38,10 +38,48 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  methods: {
+    // 触发下拉事件
+    async dropdownFn(command) {
+      // 判断下拉选中的command值
+      switch (command) {
+        // 添加
+        case 'add':
+          this.$emit('addDepts', this.treeNode.id)
+          break
+          // 编辑
+        case 'edit':
+
+          break
+          // 删除
+        case 'del':
+          // 确认是否需要删除
+          try {
+            await this.$confirm('确定要删除么？', '提醒', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            })
+            // 将id 传递给父组件，让父组件去发起请求并刷新页面
+            this.$emit('delDepts', this.treeNode.id)
+          } catch (error) {
+            // 如果用户取消就会被捕捉到
+            this.$message.warning('已取消')
+          }
+
+          break
+        default:
+          break
+      }
+    }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  span{
+    color: cornflowerblue;
+    font-size: 14px;
+  }
 </style>
